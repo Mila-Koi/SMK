@@ -79,14 +79,21 @@ vector<float> animateVals;							// vector to store a few different animation cy
 vector<glm::vec3> controlPoints; 					// control points for Bezier curve
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int surfaceRes = 3;
 =======
+=======
+>>>>>>> d49867c (Small edit)
 map<float, float> lookupTable;	
 int tableResolution = 1000;								// for smooth vehicle movement
 
 bool cageOn = true;									// Determines if the cage/curve should be visible or not
 bool curveOn = true;
+<<<<<<< HEAD
 >>>>>>> ecc2a23 (Added getParameterizedt function which takes in a float t and returns the respective parameterized value. Probably needs testing after everything is put together)
+=======
+int surfaceRes = 3;
+>>>>>>> d49867c (Small edit)
 
 glm::mat4 transMtx; 								// global variables used for transformations
 glm::mat4 rotateMtx;
@@ -209,6 +216,28 @@ void renderBezierCurve( glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+void generateLookupTable() {
+	lookupTable.clear();
+	float distance = 0;
+	glm::vec3 lastPoint = controlPoints[0];
+	for (unsigned int i = 0; i + 1 < controlPoints.size(); i += 3) {
+		for (float j = 0; j < tableResolution; j += 1) {
+			glm::vec3 point = evaluateBezierCurve(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2], controlPoints[i + 3], j / tableResolution);
+			distance += sqrt(pow((point.x - lastPoint.x), 2) + pow(point.y - lastPoint.y, 2) + pow(point.z - lastPoint.z, 2));
+			float t = i + j / tableResolution;
+			lookupTable[t] = distance;
+		}
+	}
+}
+
+float getParameterizedt(float pos) {
+	float bot = lookupTable.at(floor(pos * tableResolution) / tableResolution);
+	float top = lookupTable.at(ceil(pos * tableResolution) / tableResolution);
+	return (bot * (1 - (racerPos - floor(racerPos))) + top * (racerPos - floor(racerPos)));
+}
+>>>>>>> d49867c (Small edit)
 // renderBezierSurface() //////////////////////////////////////////////////////////
 //
 // 
@@ -230,6 +259,7 @@ void renderBezierSurface(vector<glm::vec3> p, int u_res) {
 	}
 }
 
+<<<<<<< HEAD
 
 =======
 void generateLookupTable() {
@@ -253,6 +283,8 @@ float getParameterizedt(float pos) {
 }
 >>>>>>> ecc2a23 (Added getParameterizedt function which takes in a float t and returns the respective parameterized value. Probably needs testing after everything is put together)
 
+=======
+>>>>>>> d49867c (Small edit)
 //*************************************************************************************
 //
 // Event Callbacks
@@ -636,7 +668,10 @@ void renderScene(void)  {
 	}
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> d49867c (Small edit)
 	//draws curve
 	glDisable(GL_LIGHTING);
 	
@@ -653,7 +688,11 @@ void renderScene(void)  {
 	for(unsigned int i = 0; i + 1 < controlPoints.size(); i+=3){
 		renderBezierCurve(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2], controlPoints[i + 3], 20);
 	}
+<<<<<<< HEAD
 >>>>>>> ecc2a23 (Added getParameterizedt function which takes in a float t and returns the respective parameterized value. Probably needs testing after everything is put together)
+=======
+
+>>>>>>> d49867c (Small edit)
 
 	renderBezierSurface(controlPoints, surfaceRes);
 
