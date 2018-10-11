@@ -4,7 +4,7 @@
  *  Project: SMK
  *  File: main.cpp
  *
- *	Author: David Ayres (and others)
+ *	Authors: David Ayres, Alexander DeGroat, Joshua Nachtigal, Savannah Paul
  *
  *  Description:
  *      Watch some heroes race around a track
@@ -66,7 +66,6 @@ float turnSpeed = 0.05f;							// speed the hero is turning
 
 float racerPos = 0;									// t value for racing heroes
 
-
 bool walking = false;								// values that determine whether or not the hero is turning and/or walking
 bool turning = false;
 float direction = 1.0f;								// direction the hero is walking (forwards = 1.0, backwards = -1.0)
@@ -85,13 +84,16 @@ int surfaceRes = 3;
 =======
 >>>>>>> d49867c (Small edit)
 map<float, float> lookupTable;	
-int tableResolution = 1000;								// for smooth vehicle movement
+int tableResolution = 1000;							// for smooth vehicle movement
 
+<<<<<<< HEAD
 bool cageOn = true;									// Determines if the cage/curve should be visible or not
 bool curveOn = true;
 <<<<<<< HEAD
 >>>>>>> ecc2a23 (Added getParameterizedt function which takes in a float t and returns the respective parameterized value. Probably needs testing after everything is put together)
 =======
+=======
+>>>>>>> b5cf244 (edited merge related stuff)
 int surfaceRes = 3;
 >>>>>>> d49867c (Small edit)
 
@@ -669,6 +671,7 @@ void renderScene(void)  {
 	
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> d49867c (Small edit)
@@ -693,7 +696,10 @@ void renderScene(void)  {
 =======
 
 >>>>>>> d49867c (Small edit)
+=======
+>>>>>>> b5cf244 (edited merge related stuff)
 
+	// draws surface
 	renderBezierSurface(controlPoints, surfaceRes);
 
 
