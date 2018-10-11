@@ -75,7 +75,8 @@ float animationFrame = 0.0f;						// value for the current animation cycle (used
 int animateIndex = 5;								// index the value of the animation cycle is in the following vector
 vector<float> animateVals;							// vector to store a few different animation cycle values
 
-vector<glm::vec3> controlPoints; 					// control points for Bezier curve
+vector<vector<glm::vec3> > controlPoints; 			// control points for Bezier surface
+vector<glm::vec3> curveControlPoints;				// control points for Bezier curve
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -87,6 +88,7 @@ map<float, float> lookupTable;
 int tableResolution = 1000;							// for smooth vehicle movement
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool cageOn = true;									// Determines if the cage/curve should be visible or not
 bool curveOn = true;
 <<<<<<< HEAD
@@ -96,6 +98,10 @@ bool curveOn = true;
 >>>>>>> b5cf244 (edited merge related stuff)
 int surfaceRes = 3;
 >>>>>>> d49867c (Small edit)
+=======
+int surfaceRes = 5;
+float height = 0;
+>>>>>>> fa8d1a8 (Refactored for two separate loadControlPoint functions)
 
 glm::mat4 transMtx; 								// global variables used for transformations
 glm::mat4 rotateMtx;
@@ -154,7 +160,7 @@ void checkBounds(){
 //	the global variable controlPoints
 //
 ////////////////////////////////////////////////////////////////////////////////
-bool loadControlPoints( char* filename ) {
+bool loadSurfaceControlPoints( char* filename ) {
 	ifstream inputFile(filename);
 
 	string numPointsString;
@@ -162,13 +168,37 @@ bool loadControlPoints( char* filename ) {
 	getline(inputFile, numPointsString);
 	sscanf(numPointsString.c_str(), "%d", &numPoints);
 
-	for(int i = 0; i < numPoints; i++){
+	for(int j = 0; j < numPoints / 16; j++){
+		vector<glm::vec3> newSurface;
+		for (int i = 0; i < 16; i++) {
+			string x, y, z;
+			getline(inputFile, x, ',');
+			getline(inputFile, y, ',');
+			getline(inputFile, z);
+			glm::vec3 controlPoint = glm::vec3(atof(x.c_str()), atof(y.c_str()), atof(z.c_str()));
+			newSurface.push_back(controlPoint);
+		}
+		controlPoints.push_back(newSurface);
+	}
+
+	return true;
+}
+
+bool loadCurveControlPoints(char* filename) {
+	ifstream inputFile(filename);
+
+	string numPointsString;
+	int numPoints;
+	getline(inputFile, numPointsString);
+	sscanf(numPointsString.c_str(), "%d", &numPoints);
+
+	for (int j = 0; j < numPoints; j++) {
 		string x, y, z;
 		getline(inputFile, x, ',');
 		getline(inputFile, y, ',');
 		getline(inputFile, z);
 		glm::vec3 controlPoint = glm::vec3(atof(x.c_str()), atof(y.c_str()), atof(z.c_str()));
-		controlPoints.push_back(controlPoint);
+		curveControlPoints.push_back(controlPoint);
 	}
 
 	return true;
@@ -203,7 +233,7 @@ void renderBezierCurve( glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, 
 		glm::vec3 crossPoint1 = nextPoint2 - nextPoint1;
 		glm::vec3 crossPoint2 = nextPoint3 - nextPoint1;
 
-		glm::vec3 normalVec = glm::cross(crossPoint1, crossPoint2);
+		glm::vec3 normalVec = glm::cross(crossPoint2, crossPoint1);
 		glNormal3f(normalVec.x, normalVec.y, normalVec.z);
 
 		glBegin(GL_TRIANGLE_STRIP);
@@ -223,10 +253,10 @@ void renderBezierCurve( glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, 
 void generateLookupTable() {
 	lookupTable.clear();
 	float distance = 0;
-	glm::vec3 lastPoint = controlPoints[0];
-	for (unsigned int i = 0; i + 1 < controlPoints.size(); i += 3) {
+	glm::vec3 lastPoint = curveControlPoints[0];
+	for (unsigned int i = 0; i + 1 < curveControlPoints.size(); i += 3) {
 		for (float j = 0; j < tableResolution; j += 1) {
-			glm::vec3 point = evaluateBezierCurve(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2], controlPoints[i + 3], j / tableResolution);
+			glm::vec3 point = evaluateBezierCurve(curveControlPoints[i], curveControlPoints[i + 1], curveControlPoints[i + 2], curveControlPoints[i + 3], j / tableResolution);
 			distance += sqrt(pow((point.x - lastPoint.x), 2) + pow(point.y - lastPoint.y, 2) + pow(point.z - lastPoint.z, 2));
 			float t = i + j / tableResolution;
 			lookupTable[t] = distance;
@@ -407,8 +437,8 @@ static void scroll_callback( GLFWwindow *window, double xoffset, double yoffset)
 	if(camDistance < 1){
 		camDistance = 1;
 	}
-	else if(camDistance > 15){
-		camDistance = 15;
+	else if(camDistance > 150){
+		camDistance = 150;
 	}
 	recomputeOrientation();
 }
@@ -590,14 +620,14 @@ void drawLamppost(){ // Draws a single lamppost
 }
 
 void drawVehicleNotParameterized() {
-	if (racerPos > ceil((controlPoints.size()) / 3))
+	if (racerPos > ceil((curveControlPoints.size()) / 3))
 		racerPos = 0;
 
 
 	//move to location on bezier curve
 	int p0 = floor(racerPos) * 3;
 	float t = racerPos - floor(racerPos);
-	glm::vec3 loc = evaluateBezierCurve(controlPoints.at(p0), controlPoints.at(p0 + 1), controlPoints.at(p0 + 2), controlPoints.at(p0 + 3), t);
+	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, loc.y, loc.z));
 	glMultMatrixf(&transMtx[0][0]);
 	//draw vehicle
@@ -613,7 +643,7 @@ void drawVehicleParameterized() {
 	float t = getParameterizedt(racerPos);
 	//move to location on bezier curve
 	int p0 = floor(t) * 3;
-	glm::vec3 loc = evaluateBezierCurve(controlPoints.at(p0), controlPoints.at(p0 + 1), controlPoints.at(p0 + 2), controlPoints.at(p0 + 3), t);
+	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, loc.y, loc.z));
 	glMultMatrixf(&transMtx[0][0]);
 	//draw vehicle
@@ -641,7 +671,16 @@ void generateEnvironmentDL() {
 
 	terrainDL = glGenLists(1);
 	glNewList(terrainDL, GL_COMPILE);
-	//	renderBezierSurface(controlPoints, surfaceRes);
+		for (int x = -40; x <= 40; x += 10) {
+			for (int z = -40; z <= 40; z += 10) {
+				transMtx = glm::translate(glm::mat4(), glm::vec3(x, 0, z));
+				glMultMatrixf(&transMtx[0][0]);
+				for (unsigned int i = 0; i < controlPoints.size(); i++) {
+					renderBezierSurface(controlPoints[i], surfaceRes);
+				}
+				glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
+			}
+		}
 	glEndList();
 
 }
@@ -664,11 +703,13 @@ void renderScene(void)  {
 	// draws surface control points
 	glColor3ub(0, 255, 0);
 	for(unsigned int i = 0; i < controlPoints.size(); i++){
-		transMtx = glm::translate(glm::mat4(), glm::vec3(controlPoints[i].x, controlPoints[i].y, controlPoints[i].z));
-		glMultMatrixf(&transMtx[0][0]);
-		glLoadName(i);
-		CSCI441::drawSolidSphere(0.07, 20, 20);
-		glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
+		for (unsigned int j = 0; j < controlPoints[i].size(); j++) {
+			transMtx = glm::translate(glm::mat4(), glm::vec3(controlPoints[i][j].x, controlPoints[i][j].y, controlPoints[i][j].z));
+			glMultMatrixf(&transMtx[0][0]);
+			glLoadName(i);
+			CSCI441::drawSolidSphere(0.07, 20, 20);
+			glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
+		}
 	}
 	
 <<<<<<< HEAD
@@ -701,8 +742,9 @@ void renderScene(void)  {
 =======
 >>>>>>> b5cf244 (edited merge related stuff)
 
+
 	// draws surface
-	renderBezierSurface(controlPoints, surfaceRes);
+	glCallList(terrainDL);
 
 
 
@@ -854,12 +896,13 @@ void setupScene() {
 //		Really you should know what this is by now.  We will make use of the parameters later
 //
 int main(int argc, char *argv[]) {
-	if (argc != 2) {
+	if (argc != 3) {
 		fprintf(stderr, "[ERROR]: Control point CSV not passed into command line\n");
 		exit(EXIT_FAILURE);
 	}
 
-	loadControlPoints(argv[1]);
+	loadSurfaceControlPoints(argv[1]);
+	loadCurveControlPoints(argv[2]);
 
 	// GLFW sets up our OpenGL context so must be done first
 	GLFWwindow *window = setupGLFW();	// initialize all of the GLFW specific information releated to OpenGL and our window
