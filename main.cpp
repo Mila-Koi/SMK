@@ -820,8 +820,8 @@ void renderScene(void)  {
 >>>>>>> d49867c (Small edit)
 =======
 
-	drawVehicleParameterized();
-	drawVehicleNotParameterized();
+	//drawVehicleParameterized();
+	//drawVehicleNotParameterized();
 
 	glColor3ub(0, 255, 0);
 	for(unsigned int i = 0; i < controlPoints.size(); i++){
@@ -1033,6 +1033,7 @@ int main(int argc, char *argv[]) {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	loadSurfaceControlPoints(argv[1]);
 	loadCurveControlPoints(argv[2]);
 
@@ -1040,6 +1041,12 @@ int main(int argc, char *argv[]) {
 	loadControlPoints(argv[1]);
 	generateLookupTable();
 >>>>>>> 0d05240 (Got parameterized stuff working)
+=======
+	loadSurfaceControlPoints(argv[1]);
+	loadCurveControlPoints(argv[2]);
+
+	generateLookupTable();
+>>>>>>> f90c036 (Stuff works i guess)
 	// GLFW sets up our OpenGL context so must be done first
 	GLFWwindow *window = setupGLFW();	// initialize all of the GLFW specific information releated to OpenGL and our window
 	setupOpenGL();										// initialize all of the OpenGL specific information
