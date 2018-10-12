@@ -35,6 +35,9 @@
 #include <vector>				// for vectors
 #include <iostream>
 #include <map>
+#include <string>
+#include <sstream>
+#include <math.h>
 
 #include "HeroBase.h"
 #include "Alex.h"
@@ -93,6 +96,7 @@ vector<glm::vec3> lampPoints;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 int surfaceRes = 3;
 =======
 =======
@@ -103,6 +107,11 @@ int tableResolution = 1000;							// for smooth vehicle movement
 =======
 int tableResolution = 101;								// for smooth vehicle movement
 >>>>>>> 0d05240 (Got parameterized stuff working)
+=======
+map<float, float> lookupTable;
+map<pair<float, float>, float> totalPoints;
+pair<float, float> mew(1.2, 2.4);
+>>>>>>> 32113c0 (height and stuff)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -292,6 +301,54 @@ bool loadPoints( char* filename ) {
 	return true;
 }
 
+float round(float var){
+	float value = (int)(var * 100 + .5);
+	return (float)value / 100;
+}
+
+float calcHeight(float x, float y) {
+
+
+
+
+	cout << "x: " << x << "y: " << y << endl;
+	
+	while (x > 10) {
+		x = x - 10;
+	}
+	while (y > 10) {
+		y =y - 10;
+	}
+	while (x < 0) {
+		x = x + 10;
+	}
+	while (y < 0) {
+		y = y + 10;
+	}
+	pair<float, float> temp(round(x), round(y));
+	//stringstream iss;
+	//iss << x;
+	//string x_t = iss.str();
+	//stringstream iss2;
+	//iss2 << y;
+	//string y_t = iss2.str();
+	//string both = x_t + " " + y_t;
+
+
+	if (totalPoints.find(temp) == totalPoints.end()) {
+		//cout << "key not found" << endl;
+		map<pair<float, float>, float>::iterator lower = totalPoints.lower_bound(temp);
+		map<pair<float, float>, float>::iterator upper = totalPoints.upper_bound(temp);
+		return (upper->second + lower->second) / 2;
+		//return ( (upper->second * (temp.first / upper->first.first) * (temp.second / upper->first.second) / upper->first.first) + (lower->second * (upper->first.first - (temp.first / upper->first.first)) * (upper->first.second - upper->first.second / temp.second)) / upper->first.second);
+	}
+
+	//cout << both << endl;
+	//cout << totalPoints[both] << endl;
+	//cout << totalPoints[both] << endl;
+	return totalPoints[temp];
+}
+
 
 // evaluateBezierCurve() ////////////////////////////////////////////////////////
 //
@@ -301,6 +358,30 @@ bool loadPoints( char* filename ) {
 
 glm::vec3 evaluateBezierCurve( glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t ) {
 	glm::vec3 point = (float(pow((1.0 - t), 3)) * p0) + (3.0f * float(pow((1.0 - t), 2)) * t * p1) + (3.0f * (1.0f - t) * float(pow(t, 2)) * p2) + (float(pow(t, 3)) * p3);
+	
+	
+	/*stringstream iss;
+	iss << round(point.x);
+	string x = iss.str();
+	stringstream iss2;
+	iss2 << round(abs(point.z));
+	string y = iss2.str();
+	string both = x + " " + y;
+	glm::vec3 temp(point.x, point.z, 0);
+	*/
+	pair<float, float> temp (round(point.x), abs(round(point.z)));
+	cout << temp.first << " " << temp.second << " " << point.y << endl;
+	totalPoints[temp] = point.y;
+	
+	//cout << both << endl;
+	//float z = point.y;
+	//cout <<"x: " << x << " y: " << y << " z: " << z << endl;
+	//totalPoints[both] = z;
+
+	int a[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	//if(find(std::begin(a), std::end(a), x) != std::end(a))
+
+
 	return point;
 }
 
@@ -330,6 +411,16 @@ void renderBezierCurve( glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, 
 			glVertex3f(nextPoint3.x, nextPoint3.y, nextPoint3.z);
 			glVertex3f(nextPoint4.x, nextPoint4.y, nextPoint4.z);
 		glEnd();
+
+		//pair<float, float> temp(round(point.x), abs(round(point.z)));
+		/*
+		totalPoints[pair<float, float>(nextPoint1.x, nextPoint1.z)] = nextPoint1.y;
+		totalPoints[pair<float, float>(nextPoint2.x, nextPoint2.z)] = nextPoint2.y;
+		totalPoints[pair<float, float>(nextPoint3.x, nextPoint3.z)] = nextPoint3.y;
+		totalPoints[pair<float, float>(nextPoint4.x, nextPoint4.z)] = nextPoint4.y;
+		pair<float, float> temp(nextPoint4.x, nextPoint4.z);
+		*/
+		//cout << totalPoints[temp] << endl;
 
 		t += (1.0/resolution);
 	}
@@ -1065,10 +1156,15 @@ void renderScene(void)  {
 	glColor3ub(45, 163, 59);
 
 	glCallList(terrainDL);
+<<<<<<< HEAD
 =======
 	// draws surface
 	renderBezierSurface(controlPoints, surfaceRes);
 >>>>>>> a229d73 (Add overlay for first person)
+=======
+
+	//cout << mew.first << " " << mew.second << endl;
+>>>>>>> 32113c0 (height and stuff)
 }
 
 
@@ -1216,6 +1312,21 @@ void setupScene() {
 	animateVals.push_back(-0.3);
 	animateVals.push_back(-0.4);
 
+<<<<<<< HEAD
+=======
+	// give the camera a scenic starting point.
+	camPos.x = 5;
+	camPos.y = 5;
+	camPos.z = 5;
+	cameraTheta = -M_PI / 3.0f;
+	cameraPhi = M_PI / 2.8f;
+
+	// place the hero in a default position
+	heroPos = glm::vec3(0, 0.3, 0);
+	heroPos.y = calcHeight(heroPos.x, heroPos.z);
+	heroAngle = 0.0f;
+	heroDir = glm::vec3(0, 0, 1);
+>>>>>>> 32113c0 (height and stuff)
 	recomputeOrientation();
 
 	freeCamDir.x = 0.0f;
@@ -1403,6 +1514,51 @@ int main(int argc, char *argv[]) {
 				animateIndex = 5;
 			}
 		}
+<<<<<<< HEAD
+=======
+		else if(cameraLeft){
+			cameraTheta += 0.05;
+			recomputeOrientation();
+		}
+		else if(cameraRight){
+			cameraTheta -= 0.05;
+			recomputeOrientation();
+		}
+
+		// Checks what the hero is doing, and moves/animates the hero accordingly
+		if(walking && turning){
+			heroPos = heroPos + (direction * walkSpeed * heroDir);
+			heroPos.y = calcHeight(heroPos.x, heroPos.z);
+			heroAngle += turnDirection * turnSpeed;
+			recomputeOrientation();
+			checkBounds();
+
+			animateIndex = (animateIndex + 1) % animateVals.size();
+			animationFrame = animateVals[animateIndex];
+		}
+		else if(walking){
+			heroPos = heroPos + (direction * walkSpeed * heroDir);
+			heroPos.y = calcHeight(heroPos.x, heroPos.z);
+			recomputeOrientation();
+			checkBounds();
+
+			animateIndex = (animateIndex + 1) % animateVals.size();
+			animationFrame = animateVals[animateIndex];
+		}
+		else if(turning){
+			heroAngle += turnDirection * turnSpeed;
+			recomputeOrientation();
+
+			animateIndex = (animateIndex + 1) % animateVals.size();
+			animationFrame = animateVals[animateIndex];
+		}
+		else{
+			animationFrame = 0; // Default state for the hero
+			animateIndex = 5;
+		}
+
+
+>>>>>>> 32113c0 (height and stuff)
 
 		glfwSwapBuffers(window);// flush the OpenGL commands and make sure they get rendered!
 		glfwPollEvents();				// check for any events and signal to redraw screen
