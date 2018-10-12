@@ -327,24 +327,35 @@ float round(float var){
 
 float calcHeight(float x, float y) {
 
+	float shortestDist = 100000.0;
+	float newY = 0.0;
+	map<pair<float, float>, float>::iterator it = surfacePoints.begin();
 
+	while (it != surfacePoints.end()) {
+		if (getDist(it->first.first, it->first.second, x , y) < shortestDist) {
+			shortestDist = getDist(it->first.first, it->first.second, x, y);
+			newY = it->second;
+		}
+		it++;
+	}
+	return newY;
 
 
 	//cout << "x: " << x << "y: " << y << endl;
 	
-	while (x > 100) {
-		x = x - 100;
-	}
-	while (y > 100) {
-		y =y - 100;
-	}
-	while (x < 0) {
-		x = x + 100;
-	}
-	while (y < 0) {
-		y = y + 100;
-	}
-	pair<float, float> temp(round(x), round(y));
+	//while (x > 100) {
+	//	x = x - 100;
+	//}
+	//while (y > 100) {
+	//	y =y - 100;
+	//}
+	//while (x < 0) {
+	//	x = x + 100;
+//	}
+//	while (y < 0) {
+//		y = y + 100;
+//	}
+//	pair<float, float> temp(round(x), round(y));
 	//stringstream iss;
 	//iss << x;
 	//string x_t = iss.str();
@@ -356,9 +367,9 @@ float calcHeight(float x, float y) {
 
 	//if (totalPoints.find(temp) == totalPoints.end()) {
 		//cout << "key not found" << endl;
-		map<pair<float, float>, float>::iterator lower = totalPoints.lower_bound(temp);
-		map<pair<float, float>, float>::iterator upper = totalPoints.upper_bound(temp);
-		return upper->second;
+		//map<pair<float, float>, float>::iterator lower = totalPoints.lower_bound(temp);
+	//	map<pair<float, float>, float>::iterator upper = totalPoints.upper_bound(temp);
+	//	return upper->second;
 		//return (upper->second + lower->second) / 2;
 		//return ( (upper->second * (temp.first / upper->first.first) * (temp.second / upper->first.second) / upper->first.first) + (lower->second * (upper->first.first - (temp.first / upper->first.first)) * (upper->first.second - upper->first.second / temp.second)) / upper->first.second);
 	//}
@@ -366,7 +377,7 @@ float calcHeight(float x, float y) {
 	//cout << both << endl;
 	//cout << totalPoints[both] << endl;
 	//cout << totalPoints[both] << endl;
-	return totalPoints[temp];
+	//return totalPoints[temp];
 }
 
 
@@ -412,6 +423,7 @@ glm::vec3 evaluateBezierCurve2(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::ve
 	glm::vec3 point = (float(pow((1.0 - t), 3)) * p0) + (3.0f * float(pow((1.0 - t), 2)) * t * p1) + (3.0f * (1.0f - t) * float(pow(t, 2)) * p2) + (float(pow(t, 3)) * p3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/*stringstream iss;
 	iss << round(point.x);
@@ -444,6 +456,8 @@ glm::vec3 evaluateBezierCurve2(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::ve
 	surfacePoints[coords] = point.y;
 >>>>>>> 3a3c990 (something)
 
+=======
+>>>>>>> 427c140 (merging)
 	return point;
 }
 
@@ -477,6 +491,19 @@ void renderBezierCurve( glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, 
 		t += (1.0/resolution);
 	}
 }
+<<<<<<< HEAD
+=======
+void renderBezierCurve1(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, int resolution) {
+	glDisable(GL_LIGHTING);
+	glBegin(GL_LINE_STRIP);
+	for (float i = 0; i < resolution; i += 1) {
+		glm::vec3 point = evaluateBezierCurve2(p0, p1, p2, p3, i / resolution);
+		glVertex3f(point.x, point.y, point.z);
+	}
+	glEnd();
+	glEnable(GL_LIGHTING);
+}
+>>>>>>> 427c140 (merging)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -487,7 +514,7 @@ void generateLookupTable() {
 	glm::vec3 lastPoint = curveControlPoints[0];
 	for (unsigned int i = 0; i + 1 < curveControlPoints.size(); i += 3) {
 		for (float j = 0; j < tableResolution; j += 1) {
-			glm::vec3 point = evaluateBezierCurve(curveControlPoints[i], curveControlPoints[i + 1], curveControlPoints[i + 2], curveControlPoints[i + 3], j / tableResolution);
+			glm::vec3 point = evaluateBezierCurve2(curveControlPoints[i], curveControlPoints[i + 1], curveControlPoints[i + 2], curveControlPoints[i + 3], j / tableResolution);
 			distance += sqrt(pow((point.x - lastPoint.x), 2) + pow(point.y - lastPoint.y, 2) + pow(point.z - lastPoint.z, 2));
 			float t = i / 3 + j / tableResolution;
 			cout << distance << " " << t << endl;
@@ -987,13 +1014,28 @@ void drawVehicleNotParameterized(HeroBase* racer) {
 	int p0 = floor(racerPos) * 3;
 	float t = racerPos - floor(racerPos);
 	//cout << t << endl;
-	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
+
+	glm::vec3 loc = evaluateBezierCurve2(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z));
 	glMultMatrixf(&transMtx[0][0]);
 	//draw vehicle
+	float t2 = racerPos + .01;
+	t2 = t2 - floor(t2);
+
+	//float yaw = glm::cross((evaluateBezierCurve2(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t2) - loc), racer->yaw) ;
+	racer->yaw = yaw;
+
+	//rotateMtx = glm::rotate(glm::mat4(), yaw, glm::vec3(0, 1, 0));
+	//glMultMatrixf(&rotateMtx[0][0]);
+
 	racer->draw(true);
 
+	//rotateMtx = glm::rotate(glm::mat4(), -yaw, glm::vec3(0, 1, 0));
+	//glMultMatrixf(&rotateMtx[0][0]);
+
 	glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
+
+
 }
 
 void drawVehicleParameterized(HeroBase* racer) {
@@ -1012,6 +1054,7 @@ void drawVehicleParameterized(HeroBase* racer) {
 >>>>>>> 0b785c0 (changed points some)
 =======
 	//cout << t << endl;
+<<<<<<< HEAD
 >>>>>>> 6af7604 (parameterization)
 	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 <<<<<<< HEAD
@@ -1021,13 +1064,30 @@ void drawVehicleParameterized(HeroBase* racer) {
 >>>>>>> 0d05240 (Got parameterized stuff working)
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, loc.y, loc.z));
 =======
+=======
+	glm::vec3 loc = evaluateBezierCurve2(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
+>>>>>>> 427c140 (merging)
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z));
 >>>>>>> 3a3c990 (something)
 	glMultMatrixf(&transMtx[0][0]);
 	//draw vehicle
+	float t2 = racerPos + .01;
+	t2 = t2 - floor(t2);
+	//glm::vec3 yaw = evaluateBezierCurve2(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t2) - loc;
+	racer->yaw = yaw;
+
+	//rotateMtx = glm::rotate(glm::mat4(), yaw, glm::vec3(0, 1, 0));
+	//glMultMatrixf(&rotateMtx[0][0]);
+
 	racer->draw(true);
 
+	//rotateMtx = glm::rotate(glm::mat4(), -yaw, glm::vec3(0, 1, 0));
+	//glMultMatrixf(&rotateMtx[0][0]);
+
 	glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
+
+
+
 }
 
 void drawLandscape() {
@@ -1610,6 +1670,7 @@ int main(int argc, char *argv[]) {
 				currHero->pos.y = calcHeight(currHero->pos.x, currHero->pos.z);
 				currHero->yaw += turnDirection * turnSpeed;
 
+<<<<<<< HEAD
 				float shortestDist = 100000.0;
 				float newY = 0.0;
 				map<pair<float, float>, float>::iterator it = surfacePoints.begin();
@@ -1625,6 +1686,9 @@ int main(int argc, char *argv[]) {
 				currHero->pos.y = newY + 2.5;
 =======
 				currHero->pos.y = newY;
+=======
+				currHero->pos.y = calcHeight(currHero->pos.x, currHero->pos.z);
+>>>>>>> 427c140 (merging)
 				//cout << currHero->pos.x / scaleConstant << " " << currHero->pos.y / heightScaleConstant << " " << currHero->pos.z / scaleConstant << endl;
 >>>>>>> 6af7604 (parameterization)
 
@@ -1638,9 +1702,15 @@ int main(int argc, char *argv[]) {
 			else if(walking){
 				currHero->pos = currHero->pos + (direction * walkSpeed * currHero->direction);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				currHero->pos.y = calcHeight(currHero->pos.x, currHero->pos.z);
 =======
 
+=======
+//
+
+				/*
+>>>>>>> 427c140 (merging)
 				float shortestDist = 100000.0;
 				float newY = 0.0;
 				map<pair<float, float>, float>::iterator it = surfacePoints.begin();
@@ -1651,6 +1721,7 @@ int main(int argc, char *argv[]) {
 						newY = it->second;
 					}
 					it++;
+<<<<<<< HEAD
 				}
 <<<<<<< HEAD
 				currHero->pos.y = newY;
@@ -1658,6 +1729,10 @@ int main(int argc, char *argv[]) {
 >>>>>>> aaf8ff6 (Added wanderer along the surface)
 =======
 				currHero->pos.y = newY ;
+=======
+				} */
+				currHero->pos.y = calcHeight(currHero->pos.x, currHero->pos.z);
+>>>>>>> 427c140 (merging)
 				//cout << currHero->pos.x / scaleConstant << " " << currHero->pos.y / heightScaleConstant << " " << currHero->pos.z / scaleConstant<< endl;
 >>>>>>> 6af7604 (parameterization)
 				recomputeOrientation();
