@@ -204,13 +204,14 @@ float getDist(float x1, float y1, float x2, float y2){
 //  cameraTheta or cameraPhi is updated.
 //
 ////////////////////////////////////////////////////////////////////////////////
-void recomputeOrientation() {
-	float camDistance = currHero->camDistance;
-	float cameraTheta = currHero->cameraTheta;
-	float cameraPhi = currHero->cameraPhi;
+void recomputeOrientation(HeroBase* hero = NULL) {
+	if(hero == NULL) hero = currHero;
+	float camDistance = hero->camDistance;
+	float cameraTheta = hero->cameraTheta;
+	float cameraPhi = hero->cameraPhi;
 
-	currHero->direction = glm::vec3(sin(currHero->yaw), 0, cos(currHero->yaw));
-	currHero->camPos = glm::vec3(camDistance * sin(cameraTheta) * sin(cameraPhi), -camDistance * cos(cameraPhi), -camDistance * cos(cameraTheta) * sin(cameraPhi)) + currHero->pos;
+	hero->direction = glm::vec3(sin(hero->yaw), 0, cos(hero->yaw));
+	hero->camPos = glm::vec3(camDistance * sin(cameraTheta) * sin(cameraPhi), -camDistance * cos(cameraPhi), -camDistance * cos(cameraTheta) * sin(cameraPhi)) + hero->pos;
 }
 
 // checkBounds() ///////////////////////////////////////////////////////////////
@@ -1020,6 +1021,7 @@ void drawLamppost(){ // Draws a single lamppost
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void drawVehicleNotParameterized() {
 <<<<<<< HEAD
 	if (racerPos > ceil((curveControlPoints.size()) / 3))
@@ -1034,12 +1036,19 @@ void drawVehicleNotParameterized(HeroBase* racer) {
 >>>>>>> 0d05240 (Got parameterized stuff working)
 =======
 >>>>>>> d26ca5a (yay)
+=======
+void drawVehicleNotParameterized(HeroBase* racer) {	
+>>>>>>> 6b566da (Fix hero following)
 	//move to location on bezier curve
 	int p0 = floor(racerPos) * 3;
 	float t = racerPos - floor(racerPos);
 	//cout << t << endl;
 
 	glm::vec3 loc = evaluateBezierCurve2(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
+	
+	racer->pos = glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z);
+	//recomputeOrientation(racer);
+
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z));
 	glMultMatrixf(&transMtx[0][0]);
 	//draw vehicle
@@ -1053,6 +1062,7 @@ void drawVehicleNotParameterized(HeroBase* racer) {
 	//glMultMatrixf(&rotateMtx[0][0]);
 
 	racer->draw(true);
+	recomputeOrientation(racer);
 
 	//rotateMtx = glm::rotate(glm::mat4(), -yaw, glm::vec3(0, 1, 0));
 	//glMultMatrixf(&rotateMtx[0][0]);
@@ -1063,8 +1073,6 @@ void drawVehicleNotParameterized(HeroBase* racer) {
 }
 
 void drawVehicleParameterized(HeroBase* racer) {
-
-
 	//lerp
 	float t = getParameterizedt(racerPos);
 	//move to location on bezier curve
@@ -1090,10 +1098,20 @@ void drawVehicleParameterized(HeroBase* racer) {
 =======
 =======
 	glm::vec3 loc = evaluateBezierCurve2(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
+<<<<<<< HEAD
 >>>>>>> 427c140 (merging)
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z));
 >>>>>>> 3a3c990 (something)
 	glMultMatrixf(&transMtx[0][0]);
+=======
+	
+	racer->pos = glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z);
+	//recomputeOrientation(racer);
+
+	
+	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z));
+	//glMultMatrixf(&transMtx[0][0]);
+>>>>>>> 6b566da (Fix hero following)
 	//draw vehicle
 	float t2 = racerPos + .01;
 	t2 = t2 - floor(t2);
@@ -1104,11 +1122,12 @@ void drawVehicleParameterized(HeroBase* racer) {
 	//glMultMatrixf(&rotateMtx[0][0]);
 
 	racer->draw(true);
+	recomputeOrientation(racer);
 
 	//rotateMtx = glm::rotate(glm::mat4(), -yaw, glm::vec3(0, 1, 0));
 	//glMultMatrixf(&rotateMtx[0][0]);
 
-	glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
+	//glMultMatrixf(&(glm::inverse(transMtx))[0][0]);
 
 
 
