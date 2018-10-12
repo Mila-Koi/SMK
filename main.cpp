@@ -330,7 +330,7 @@ float calcHeight(float x, float y) {
 
 
 
-	cout << "x: " << x << "y: " << y << endl;
+	//cout << "x: " << x << "y: " << y << endl;
 	
 	while (x > 100) {
 		x = x - 100;
@@ -490,18 +490,18 @@ void generateLookupTable() {
 			glm::vec3 point = evaluateBezierCurve(curveControlPoints[i], curveControlPoints[i + 1], curveControlPoints[i + 2], curveControlPoints[i + 3], j / tableResolution);
 			distance += sqrt(pow((point.x - lastPoint.x), 2) + pow(point.y - lastPoint.y, 2) + pow(point.z - lastPoint.z, 2));
 			float t = i / 3 + j / tableResolution;
+			cout << distance << " " << t << endl;
 			lookupTable.insert(pair<float, float>(distance, t));
 		}
 	}
 }
 
 float getParameterizedt(float pos) {
-	float tAvg = pos / (((controlPoints.size() - 1) / 3));
+	float tAvg = pos / ((floor(curveControlPoints.size()) / 3));
 	map<float, float>::iterator low;
 	map<float, float>::iterator high;
 
 	tAvg = tAvg * lookupTable.rbegin()->first;
-
 	float t = pos - floor(pos);
 	low = lookupTable.lower_bound(tAvg);
 	high = lookupTable.upper_bound(tAvg);
@@ -983,7 +983,7 @@ void drawVehicleNotParameterized(HeroBase* racer) {
 	//move to location on bezier curve
 	int p0 = floor(racerPos) * 3;
 	float t = racerPos - floor(racerPos);
-	cout << t << endl;
+	//cout << t << endl;
 	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, calcHeight(loc.x, loc.z), loc.z));
 	glMultMatrixf(&transMtx[0][0]);
@@ -1004,8 +1004,12 @@ void drawVehicleParameterized(HeroBase* racer) {
 <<<<<<< HEAD
 =======
 	t = t - floor(t);
+<<<<<<< HEAD
 	cout << t << endl;
 >>>>>>> 0b785c0 (changed points some)
+=======
+	//cout << t << endl;
+>>>>>>> 6af7604 (parameterization)
 	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 <<<<<<< HEAD
 =======
@@ -1074,7 +1078,7 @@ void generateEnvironmentDL() {
 void renderScene(void)  {
 	// update vehicle position
 	racerPos += .01;
-	if (racerPos > ceil((curveControlPoints.size()) / 3))
+	if (racerPos > floor((curveControlPoints.size()) / 3))
 		racerPos = 0;
 
 	glCallList(environmentDL);
@@ -1603,7 +1607,12 @@ int main(int argc, char *argv[]) {
 					}
 					it++;
 				}
+<<<<<<< HEAD
 				currHero->pos.y = newY + 2.5;
+=======
+				currHero->pos.y = newY;
+				//cout << currHero->pos.x / scaleConstant << " " << currHero->pos.y / heightScaleConstant << " " << currHero->pos.z / scaleConstant << endl;
+>>>>>>> 6af7604 (parameterization)
 
 				recomputeOrientation();
 				checkBounds();
@@ -1629,9 +1638,14 @@ int main(int argc, char *argv[]) {
 					}
 					it++;
 				}
+<<<<<<< HEAD
 				currHero->pos.y = newY;
 
 >>>>>>> aaf8ff6 (Added wanderer along the surface)
+=======
+				currHero->pos.y = newY ;
+				//cout << currHero->pos.x / scaleConstant << " " << currHero->pos.y / heightScaleConstant << " " << currHero->pos.z / scaleConstant<< endl;
+>>>>>>> 6af7604 (parameterization)
 				recomputeOrientation();
 				checkBounds();
 
