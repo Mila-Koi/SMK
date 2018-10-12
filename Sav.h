@@ -141,8 +141,11 @@ public:
 	void draw(bool animate) { 				  
 		glPushMatrix();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		glTranslatef(0, 15.0, 0);
+=======
+>>>>>>> d26ca5a (yay)
 		glScalef(.25, .25, .25);
 >>>>>>> 4905365 (am)
 		glRotatef(-90, 0, 1, 0);

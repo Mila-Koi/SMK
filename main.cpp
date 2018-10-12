@@ -162,6 +162,7 @@ GLuint cloudTexHandle;
 
 GLuint environmentDL;
 GLuint terrainDL;
+GLuint trackDL;
 
 // For free cam
 glm::vec3 freeCamPos, freeCamDir;
@@ -1025,11 +1026,14 @@ void drawVehicleNotParameterized() {
 		racerPos = 0;
 =======
 void drawVehicleNotParameterized(HeroBase* racer) {
+<<<<<<< HEAD
 >>>>>>> 3a3c990 (something)
 
 
 =======
 >>>>>>> 0d05240 (Got parameterized stuff working)
+=======
+>>>>>>> d26ca5a (yay)
 	//move to location on bezier curve
 	int p0 = floor(racerPos) * 3;
 	float t = racerPos - floor(racerPos);
@@ -1112,7 +1116,26 @@ void drawVehicleParameterized(HeroBase* racer) {
 
 void drawLandscape() {
 
+<<<<<<< HEAD
 }
+=======
+void drawTrack() {
+
+	for (size_t i = 0; i < curveControlPoints.size() - 3; i += 3) {
+		for (float j = 0; j < 10; j += 1) {
+			glm::vec3 point = evaluateBezierCurve2(curveControlPoints.at(i), curveControlPoints.at(i + 1), curveControlPoints.at(i + 2), curveControlPoints.at(i + 3), j / 10);
+			glPushMatrix();
+			glTranslatef(point.x, calcHeight(point.x, point.z) -3.0, point.z);
+			CSCI441::drawSolidCube(5.5);
+			//glRotatef(90, 1, 0, 0);
+			//CSCI441::drawSolidCylinder(1.0, 1.0, 2.0, 20, 20);
+			glPopMatrix();
+		}
+	}
+}
+
+
+>>>>>>> d26ca5a (yay)
 
 // generateEnvironmentDL() /////////////////////////////////////////////////////
 //
@@ -1127,14 +1150,18 @@ void drawLandscape() {
 void generateEnvironmentDL() {
 	environmentDL = glGenLists(1);
 	glNewList(environmentDL, GL_COMPILE);
-	drawGrid();
+	//drawGrid();
+	//drawTrack();
 	glEndList();
 
 
 	terrainDL = glGenLists(1);
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> d26ca5a (yay)
 	glNewList(terrainDL, GL_COMPILE);
 	GLfloat matColorD[4] = { 0.0215,0.1745 ,0.0215,1.0 };
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matColorD);
@@ -1166,6 +1193,7 @@ void renderScene(void)  {
 
 	glCallList(environmentDL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//glCallList(terrainDL);
 
 	drawLamppost();
@@ -1177,6 +1205,9 @@ void renderScene(void)  {
 	glPushMatrix();
 	glScalef(.5, .5, .5);
 =======
+=======
+	
+>>>>>>> d26ca5a (yay)
 	//drawCharacter();
 	//drawLamppost();
 
@@ -1191,7 +1222,7 @@ void renderScene(void)  {
 	glMaterialfv(GL_FRONT, GL_SPECULAR, matColor2);
 	for (int i = 0; i < cactusPoints.size(); i++) {
 		glPushMatrix();
-		glTranslatef(cactusPoints[i].x, calcHeight(cactusPoints[i].x, cactusPoints[i].y) + 10.0, cactusPoints[i].y);
+		glTranslatef(cactusPoints[i].x, calcHeight(cactusPoints[i].x, cactusPoints[i].y), cactusPoints[i].y);
 		glScalef(.5, .5, .5);
 		drawCactus();
 		glPopMatrix();
@@ -1199,14 +1230,16 @@ void renderScene(void)  {
 
 	for (int i = 0; i < lampPoints.size(); i++) {
 		glPushMatrix();
-		glTranslatef(lampPoints[i].x, calcHeight(lampPoints[i].x, lampPoints[i].y), lampPoints[i].y);
+		glTranslatef(lampPoints[i].x, calcHeight(lampPoints[i].x, lampPoints[i].y) -5.0, lampPoints[i].y);
 		drawLamppost();
 		glPopMatrix();
 	}
 
+
 	// Draw all the heros
 	//glPushMatrix();
 	//glTranslatef(0, 10, 0);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -1220,6 +1253,10 @@ void renderScene(void)  {
 	/*
 >>>>>>> 3a3c990 (something)
 =======
+=======
+	//drawBezierCurve();
+	drawTrack();
+>>>>>>> d26ca5a (yay)
 	GLfloat matColorA[4] = { 0.19225, 0.19225, 0.19225 };
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matColorA);
 
@@ -1229,9 +1266,54 @@ void renderScene(void)  {
 	GLfloat matColorA2[4] = { 0.408273, 0.408273, 0.408273, 1.0 };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, matColorA2);
 
+<<<<<<< HEAD
 >>>>>>> 0d3e800 (Changed material colors for everything)
+=======
+	drawVehicleNotParameterized(&alex);
+
+	GLfloat matColorJ[4] = { 0.05, 0.05, 0.05 };
+	glMaterialfv(GL_FRONT, GL_AMBIENT, matColorJ);
+
+	GLfloat matColorJ1[4] = { 0.5, 0.5, 0.5 };
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, matColorJ1);
+
+	GLfloat matColorJ2[4] = { 0.7, 0.7, 0.7, 1.0 };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, matColorJ2);
+
+	drawVehicleNotParameterized(&josh);
+
+	GLfloat matColorS[4] = { 0.1745, 0.01175, 0.01175 };
+	glMaterialfv(GL_FRONT, GL_AMBIENT, matColorS);
+
+	GLfloat matColorS1[4] = { 0.41424, 0.04136, 0.04136 };
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, matColorS1);
+
+	GLfloat matColorS2[4] = { 0.427811, 0.326959, 0.326959, 1.0 };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, matColorS2);
+
+	drawVehicleParameterized(&sav);
+
+	//david.draw(false);
+	/*
+>>>>>>> d26ca5a (yay)
 	alex.draw(false);
 
+<<<<<<< HEAD
+=======
+
+	//drawBezierCurve();
+
+
+
+
+
+
+	
+
+	drawCactus();
+	glPopMatrix();
+	// Draw all the heros
+>>>>>>> d26ca5a (yay)
 	GLfloat matColorD[4] = { 0.1, 0.18725, 0.1745 };
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matColorD);
 
@@ -1563,9 +1645,9 @@ void setupScene() {
 	freeCamDir.y = 0.0f;
 	freeCamDir.z = 1.0f;
 
-	freeCamPos.x = 0.0f;
+	freeCamPos.x = 1.0f;
 	freeCamPos.y = 1.0f;
-	freeCamPos.z = 0.0f;
+	freeCamPos.z = 1.0f;
 
 	srand(time(NULL));	// seed our random number generator
 	generateEnvironmentDL();
