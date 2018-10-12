@@ -66,7 +66,7 @@ glm::vec2 mousePos;			              		  	// last known X and Y of the mouse
 glm::vec3 camPos;            						// camera position in cartesian coordinates
 float cameraTheta, cameraPhi;               		// camera DIRECTION in spherical coordinates
 float camDistance = 5.0f;							// camera distance from the hero (lookAt point)
-float cameraSpeed = 0.05f;							// speed the camera moves as a factor of a unit vector
+float cameraSpeed = 0.5f;							// speed the camera moves as a factor of a unit vector
 bool cameraIn = false;								// values that determine whether or not the camera is moving and in what direction
 bool cameraOut = false;
 bool cameraLeft = false;
@@ -292,7 +292,7 @@ bool loadPoints( char* filename ) {
 		getline(inputFile, x, ',');
 		getline(inputFile, y, ',');
 		getline(inputFile, z);
-		glm::vec3 controlPoint = glm::vec3(atof(x.c_str()), atof(y.c_str()), atof(z.c_str()));
+		glm::vec3 controlPoint = glm::vec3(atof(x.c_str()) * scaleConstant, atof(y.c_str()) * heightScaleConstant, atof(z.c_str()) * scaleConstant);
 		curveControlPoints.push_back(controlPoint);
 	}
 
@@ -415,9 +415,9 @@ glm::vec3 evaluateBezierCurve2(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::ve
 	string both = x + " " + y;
 	glm::vec3 temp(point.x, point.z, 0);
 	*/
-	pair<float, float> temp(round(point.x), abs(round(point.z)));
-	cout << temp.first << " " << temp.second << " " << point.y << endl;
-	totalPoints[temp] = point.y;
+	//pair<float, float> temp(round(point.x), abs(round(point.z)));
+	//cout << temp.first << " " << temp.second << " " << point.y << endl;
+	//totalPoints[temp] = point.y;
 
 	//cout << both << endl;
 	//float z = point.y;
@@ -977,6 +977,7 @@ void drawVehicleNotParameterized() {
 	//move to location on bezier curve
 	int p0 = floor(racerPos) * 3;
 	float t = racerPos - floor(racerPos);
+	cout << t << endl;
 	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 	glm::mat4 transMtx = glm::translate(glm::mat4(), glm::vec3(loc.x, loc.y, loc.z));
 	glMultMatrixf(&transMtx[0][0]);
@@ -994,6 +995,11 @@ void drawVehicleParameterized() {
 	//move to location on bezier curve
 	int p0 = floor(t) * 3;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	t = t - floor(t);
+	cout << t << endl;
+>>>>>>> 0b785c0 (changed points some)
 	glm::vec3 loc = evaluateBezierCurve(curveControlPoints.at(p0), curveControlPoints.at(p0 + 1), curveControlPoints.at(p0 + 2), curveControlPoints.at(p0 + 3), t);
 =======
 	t = t - floor(t);
@@ -1058,7 +1064,7 @@ void generateEnvironmentDL() {
 void renderScene(void)  {
 	// update vehicle position
 	racerPos += .01;
-	if (racerPos > ceil((controlPoints.size()) / 3))
+	if (racerPos > ceil((curveControlPoints.size()) / 3))
 		racerPos = 0;
 
 	glCallList(environmentDL);
@@ -1154,6 +1160,7 @@ void renderScene(void)  {
 	*/
 >>>>>>> b513a88 (still working)
 
+<<<<<<< HEAD
 	//drawVehicleParameterized();
 	//drawVehicleNotParameterized();
 =======
@@ -1161,6 +1168,10 @@ void renderScene(void)  {
 	alex.draw(false);
 	david.draw(false);
 >>>>>>> f444aad (Get multiple heros working with cameras)
+=======
+	drawVehicleParameterized();
+	drawVehicleNotParameterized();
+>>>>>>> 0b785c0 (changed points some)
 
 	glColor3ub(0, 255, 0);
 	for(unsigned int i = 0; i < controlPoints.size(); i++){
@@ -1486,7 +1497,7 @@ int main(int argc, char *argv[]) {
 			freeCamDir = glm::normalize(freeCamDir);
 
 			if(walking) {
-				freeCamPos += freeCamDir * walkSpeed * direction;
+				freeCamPos += freeCamDir * cameraSpeed * direction;
 			}
 
 			viewMtx = glm::lookAt(freeCamPos, freeCamPos + freeCamDir, glm::vec3(0, 1, 0));
