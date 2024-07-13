@@ -4,7 +4,7 @@
  *  Project: SMK
  *  File: main.cpp
  *
- *	Authors: David Ayres, Alexander DeGroat, Joshua Nachtigal, Savannah Paul
+ *	Authors: Alexander DeGroat, Mila Evans, Joshua Nachtigal, Savannah Paul
  *
  *  Description:
  *      Watch some heroes race around a track
@@ -41,7 +41,7 @@
 
 #include "HeroBase.h"
 #include "Alex.h"
-#include "David.h"
+#include "Mila.h"
 #include "Josh.h"
 #include "Sav.h"
 
@@ -178,7 +178,7 @@ void drawCactus();
 HeroBase* currHero;
 ///////////////////////////////////---------------------------------------------------------------------------------------------------------------
 Alex alex(glm::vec3(5.0f, 20.0f, 10.0f));
-David david(glm::vec3(5.0f, 20.3f, 5.0f));
+Mila mila(glm::vec3(5.0f, 20.3f, 5.0f));
 Josh josh(glm::vec3(-5.0f, 20.0f, -5.0f));
 Sav sav(glm::vec3(5.0f, 20.0f, 15.0f));
 
@@ -669,8 +669,8 @@ static void keyboard_callback( GLFWwindow *window, int key, int scancode, int ac
 		if(key == GLFW_KEY_A) {
 			currHero = &alex;
 		}
-		else if(key == GLFW_KEY_D) {
-			currHero = &david;
+		else if(key == GLFW_KEY_M) {
+			currHero = &mila;
 		}
 		else if(key == GLFW_KEY_S) {
 			currHero = &sav;
@@ -1312,10 +1312,21 @@ void renderScene(void)  {
 
 	drawVehicleParameterized(&sav);
 
-	//david.draw(false);
+	//mila.draw(false);
 	/*
 >>>>>>> d26ca5a (yay)
 	alex.draw(false);
+<<<<<<< HEAD
+=======
+	mila.draw(false);
+	josh.draw(false);
+	sav.draw(false);
+	//glPopMatrix();make
+	*/
+	
+	//GLfloat matColorD[4] = { 0.0215,0.1745 ,0.0215,1.0 };
+	//glMaterialfv(GL_FRONT, GL_AMBIENT, matColorD);
+>>>>>>> a267889 (Updated hero name)
 
 <<<<<<< HEAD
 =======
@@ -1342,7 +1353,7 @@ void renderScene(void)  {
 	GLfloat matColorD2[4] = { 0.297254, 0.30829, 0.306678, 1.0 };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, matColorD2);
 
-	david.draw(false);
+	mila.draw(false);
 
 	GLfloat matColorJ[4] = { 0.05, 0.05, 0.05 };
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matColorJ);
@@ -1713,7 +1724,13 @@ int main(int argc, char *argv[]) {
 
 	//loadSurfaceControlPoints(argv[1]);
 	//loadCurveControlPoints(argv[2]);
+<<<<<<< HEAD
 >>>>>>> b513a88 (still working)
+=======
+
+	currHero = &mila;
+
+>>>>>>> a267889 (Updated hero name)
 
 	generateLookupTable();
 >>>>>>> f90c036 (Stuff works i guess)
@@ -1826,6 +1843,24 @@ int main(int argc, char *argv[]) {
 				currHero->yaw += turnDirection * turnSpeed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				currHero->pos.y = calcHeight(currHero->pos.x, currHero->pos.z);
+				//cout << currHero->pos.x / scaleConstant << " " << currHero->pos.y / heightScaleConstant << " " << currHero->pos.z / scaleConstant << endl;
+
+				recomputeOrientation();
+				checkBounds();
+
+				animateIndex = (animateIndex + 1) % animateVals.size();
+				// animationFrame = animateVals[animateIndex];
+				mila.setAnimationFrame(animateVals[animateIndex]);
+			}
+			else if(walking){
+				currHero->pos = currHero->pos + (direction * walkSpeed * currHero->direction);
+//
+
+				/*
+>>>>>>> a267889 (Updated hero name)
 				float shortestDist = 100000.0;
 				float newY = 0.0;
 				map<pair<float, float>, float>::iterator it = surfacePoints.begin();
@@ -1895,7 +1930,7 @@ int main(int argc, char *argv[]) {
 
 				animateIndex = (animateIndex + 1) % animateVals.size();
 				// animationFrame = animateVals[animateIndex];
-				david.setAnimationFrame(animateVals[animateIndex]);
+				mila.setAnimationFrame(animateVals[animateIndex]);
 			}
 			else if(turning){
 				currHero->yaw += turnDirection * turnSpeed;
@@ -1903,11 +1938,11 @@ int main(int argc, char *argv[]) {
 
 				animateIndex = (animateIndex + 1) % animateVals.size();
 				// animationFrame = animateVals[animateIndex];
-				david.setAnimationFrame(animateVals[animateIndex]);
+				mila.setAnimationFrame(animateVals[animateIndex]);
 			}
 			else{
 				// animationFrame = 0; // Default state for the hero
-				david.setAnimationFrame(0);
+				mila.setAnimationFrame(0);
 				animateIndex = 5;
 			}
 		}

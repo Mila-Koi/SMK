@@ -1,5 +1,5 @@
 Names:
-David Ayres, Alexander DeGroat, Joshua Nachtigal, Savannah Paul
+Alexander DeGroat, Mila Evans, Joshua Nachtigal, Savannah Paul
 
 Clan Name: Lakitus!
 
@@ -8,7 +8,7 @@ Super Mario Kart
 This program shows our heros moving along a track.
 
 How to use:
-Press Ctrl and then either A, S, D, or J to switch between heros.
+Press Ctrl and then either A, S, M, or J to switch between heros.
 Press the 1 key for arcball camera
 Press the 2 key for free camera
 Press the 3 key to toggle the first person overlay
